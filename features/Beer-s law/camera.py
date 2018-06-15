@@ -47,31 +47,6 @@ class CameraBase:
         """
         raise NotImplementedError
 
-
-class PerspectiveCamera(CameraBase):
-    def __init__(self, pos, up, right, h_angle, v_angle):
-        super().__init__(pos, up, right)
-
-        self.h_angle = h_angle
-        self.v_angle = v_angle
-
-    def sample_vector(self, size=1):
-        samples = []
-        xy = []
-        for i in range(size):
-            input_x = np.random.random()*2 - 1
-            input_y = np.random.random()*2 - 1
-
-            real_x = np.tan(self.h_angle/2)*input_x
-            real_y = np.tan(self.v_angle/2)*input_y
-
-            start_vector = Vector(Point3D(0, 0, 0),
-                                  Point3D(real_x, real_y, -1))
-            samples.append(start_vector)
-            xy.append((input_x, input_y))
-        return samples, xy
-
-
 class OrthogonalCamera(CameraBase):
     def __init__(self, pos, up, right, width, height):
         super().__init__(pos, up, right)
@@ -89,9 +64,16 @@ class OrthogonalCamera(CameraBase):
             real_x = self.width/2*input_x
             real_y = self.height/2*input_y
             
-            start_vector = Vector(Point3D(real_x, real_y, 0),#进入相机的光线的方向向量
+            start_vector0 = Vector(Point3D(self.pos[0],self.pos[1], 0),#进入相机的光线的方向向量
                                   Point3D(real_x, real_y, -1))
-            samples.append(start_vector)
+            start_vector1 = Vector(Point3D(self.right[0], self.right[1], 0),  # 进入相机的光线的方向向量
+                                  Point3D(real_x, real_y, -1))
+            start_vector2 = Vector(Point3D(self.up[0], self.up[1], 0),  # 进入相机的光线的方向向量
+                                   Point3D(real_x, real_y, -1))
+            samples.append(start_vector0)
+            samples.append(start_vector1)
+            samples.append(start_vector2)
             xy.append((input_x, input_y))
         return samples, xy
         
+
