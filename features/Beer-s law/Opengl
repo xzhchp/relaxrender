@@ -1,0 +1,25 @@
+from OpenGL.GL import *
+from .Point2D import Point2D
+from .Ray import Ray
+class opengl:
+    def __init__(self,ray,object):
+        self.ray=ray
+        self.object=object
+        self.I0=ray.I0
+    def show(self):
+        glClearColor(1.0, 1.0, 1.0); #设置背景颜色为白色
+        glClear(GL_COLOR_BUFFER_BIT);
+        points=[]
+        for number in range(1000):
+          points.append(Point2D(self.ray.start+number*self.object.width/1000,0))
+
+        glBegin(GL_TRIANGLE_FAN);
+        for pointi in points:
+            color=self.I0
+            color=+Ray(self.ray.start,self.ray.width,pointi,self.ray.I0,self.object).getstrength()
+            glColor3f(color,color,color );
+            glVertex2f(pointi.data[0], 0);
+            glVertex2f(pointi.data[0], self.ray.width);
+        glEnd();
+        glFlush();
+
